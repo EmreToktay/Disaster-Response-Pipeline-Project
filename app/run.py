@@ -26,8 +26,8 @@ def tokenize(text):
     return clean_tokens
 
 # load data
-engine = create_engine('sqlite:///../Users/Memre/udacity_project/data/disaster_response.db')
-df = pd.read_sql_table('disaster_messages_table', engine)
+engine = create_engine('sqlite:///../disaster_response.db')
+df = pd.read_sql_table('disaster_response_table', engine)
 # load model
 model = joblib.load("../models/classifier.pkl")
 
@@ -43,7 +43,15 @@ def index():
     genre_names = list(genre_counts.index)
     
     # create visuals
-    # TODO: Below is an example - modify to create your own visuals
+    # create visuals
+    catg_nam = df.iloc[:, 4:].columns
+    bol = df.iloc[:, 4:] != 0
+    cat_bol = bol.sum().values
+
+    sum_cat = df.iloc[:, 4:].sum()
+    top_cat_values = sum_cat.sort_values(ascending=False)[1:11].values.tolist()
+    top_cat_names = list(sum_cat.sort_values(ascending=False)[1:11].index)
+
     graphs = [
         {
             'data': [
@@ -63,44 +71,44 @@ def index():
                 }
             }
         },
-    
         {
-        'data': [
-            Bar(
-                x=catg_nam,
-                y=cat_bol
-            )
-        ],
+            'data': [
+                Bar(
+                    x=catg_nam,
+                    y=cat_bol
+                )
+            ],
 
-        'layout': {
-            'title': 'Message Categories distribution',
-            'yaxis': {
-                'title': "Count"
-            },
-            'xaxis': {
-                'title': "Categories"
+            'layout': {
+                'title': 'Message Categories distribution',
+                'yaxis': {
+                    'title': "Count"
+                },
+                'xaxis': {
+                    'title': "Categories"
+                }
             }
-        }
-    },
-    {
-        'data': [
-            Bar(
-                x=top_cat_names,
-                y=top_cat
-            )
-        ],
+        },
+        {
+            'data': [
+                Bar(
+                    x=top_cat_names,
+                    y=top_cat_values
+                    )
+                ],
 
         'layout': {
             'title': 'Top 10 Categories',
             'yaxis': {
                 'title': "Count"
-            },
+                },
             'xaxis': {
                 'title': "Categories"
+                }
             }
         }
-    }
 ]
+    
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]
     graphJSON = json.dumps(graphs, cls=plotly.utils.PlotlyJSONEncoder)
@@ -129,7 +137,6 @@ def go():
 
 def main():
     app.run(host='0.0.0.0', port=3001, debug=True)
-
 
 if __name__ == '__main__':
     main()
