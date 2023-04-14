@@ -91,7 +91,7 @@ def index():
         ],
 
         'layout': {
-            'title': 'Message Categories distribution (sorted, excluding "related")',
+            'title': 'Message Categories distribution (sorted)',
             'yaxis': {
                 'title': "Count"
             },
@@ -124,7 +124,7 @@ def index():
         ],
 
         'layout': {
-            'title': 'Top 10 Categories (Pie Chart, excluding "related")',
+            'title': 'Top 10 Categories (Pie Chart)',
         }
     }
 ]    
