@@ -85,5 +85,5 @@ P.S. Run run.py directly if DisasterResponse.db and classifier.pkl already exist
 <a id='ss'></a>
 ## 4. Screenshots
 
-![Image description](images/Image_Pic1.png)
-![Image description](images/Image_Pic2.png)
+![Image description](Pic1.png)
+![Image description](Pic2.png)
