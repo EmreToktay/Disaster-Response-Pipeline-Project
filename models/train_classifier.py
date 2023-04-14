@@ -23,7 +23,7 @@ warnings.filterwarnings("ignore")
 
 def load_data(database_filepath):
     table_name = 'disaster_response_table'
-    engine = create_engine("sqlite:///" + database_filepath)
+    engine = create_engine('sqlite:///../disaster_response.db')
     df = pd.read_sql_table(table_name,engine)
     X = df["message"]
     Y = df.drop(["genre","message","id","original"], axis=1)

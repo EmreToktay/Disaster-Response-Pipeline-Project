@@ -4,7 +4,7 @@ import pandas as pd
 
 from nltk.stem import WordNetLemmatizer
 from nltk.tokenize import word_tokenize
-
+from plotly.graph_objs import Bar, Pie
 from flask import Flask
 from flask import render_template, request, jsonify
 from plotly.graph_objs import Bar
@@ -26,7 +26,7 @@ def tokenize(text):
     return clean_tokens
 
 # load data
-engine = create_engine('sqlite:///../disaster_response.db')
+engine = create_engine('sqlite:///../data/disaster_response.db')
 df = pd.read_sql_table('disaster_response_table', engine)
 # load model
 model = joblib.load("../models/classifier.pkl")
@@ -49,8 +49,17 @@ def index():
     cat_bol = bol.sum().values
 
     sum_cat = df.iloc[:, 4:].sum()
-    top_cat_values = sum_cat.sort_values(ascending=False)[1:11].values.tolist()
-    top_cat_names = list(sum_cat.sort_values(ascending=False)[1:11].index)
+    # Sort categories
+    # Sort categories (excluding the "related" category)
+    sorted_categories = df.iloc[:, 5:].sum().sort_values(ascending=False)
+    
+    # Extract top 10 categories
+    top_categories_values = sorted_categories[:10].values.tolist()
+    top_categories_names = list(sorted_categories[:10].index)
+    
+    # Sorted categories for the bar chart (excluding the "related" category)
+    sorted_cat_names = list(sorted_categories.index)
+    sorted_cat_values = sorted_categories.values.tolist()
 
     graphs = [
         {
@@ -58,56 +67,69 @@ def index():
                 Bar(
                     x=genre_names,
                     y=genre_counts
-                )
-            ],
+                    )
+                ],
 
             'layout': {
                 'title': 'Distribution of Message Genres',
                 'yaxis': {
                     'title': "Count"
-                },
+                    },
                 'xaxis': {
                     'title': "Genre"
-                }
+                    }
             }
-        },
+            },
         {
-            'data': [
-                Bar(
-                    x=catg_nam,
-                    y=cat_bol
-                )
-            ],
-
-            'layout': {
-                'title': 'Message Categories distribution',
-                'yaxis': {
-                    'title': "Count"
-                },
-                'xaxis': {
-                    'title': "Categories"
-                }
-            }
-        },
-        {
-            'data': [
-                Bar(
-                    x=top_cat_names,
-                    y=top_cat_values
-                    )
-                ],
+        'data': [
+            Bar(
+                x=sorted_cat_names,
+                y=sorted_cat_values,
+                marker=dict(color='rgba(50, 171, 96, 0.6)',
+                            line=dict(color='rgba(50, 171, 96, 1.0)', width=1))
+            )
+        ],
 
         'layout': {
-            'title': 'Top 10 Categories',
+            'title': 'Message Categories distribution (sorted, excluding "related")',
             'yaxis': {
                 'title': "Count"
-                },
+            },
             'xaxis': {
-                'title': "Categories"
-                }
+                'title': "Categories",
+                'tickangle': -45,
+                'type': 'category'
+            },
+            'margin': {
+                'b': 150  # Add margin at the bottom
             }
         }
-]
+    },
+
+    {
+        'data': [
+            Pie(
+                labels=top_categories_names,
+                values=top_categories_values,
+                textinfo='label+percent',
+                textposition='outside',  # Make sure labels are displayed outside
+                insidetextorientation='radial',
+                showlegend=True,
+                marker=dict(
+                    line=dict(color='#000000', width=2)
+                ),
+                pull=[0.1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                hoverinfo='label+value+percent',
+            )
+        ],
+
+        'layout': {
+            'title': 'Top 10 Categories (Pie Chart, excluding "related")',
+        }
+    }
+]    
+
+
     
     # encode plotly graphs in JSON
     ids = ["graph-{}".format(i) for i, _ in enumerate(graphs)]

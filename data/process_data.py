@@ -97,8 +97,8 @@ def main():
 
 
 if __name__ == '__main__':
-    messages_path = "../Users/Memre/udacity_project/messages.csv"
-    categories_path = "../Users/Memre/udacity_project/categories.csv"
-    database_filename = "../Users/Memre/udacity_project/data/disaster_response.db"
+    messages_path = "../Users/Memre/Desktop/github/Disaster-Response-Pipeline-Project/messages.csv"
+    categories_path = "../Users/Memre//Desktop/github/Disaster-Response-Pipeline-Project/categories.csv"
+    database_filename = "../Users/Memre/Desktop/github/Disaster-Response-Pipeline-Project/data/disaster_response.db"
     main()
     
