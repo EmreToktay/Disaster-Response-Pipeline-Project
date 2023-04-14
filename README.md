@@ -1,5 +1,3 @@
-# Disaster-Response-Pipelines---Data-Scientist-Nano-Degree-Program
-
 # Data Scientist Nanodegree
 
 ## Project: Disaster Response Pipeline
