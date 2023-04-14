@@ -17,9 +17,9 @@
 
 ***
 
-<a id='overview'></a>
+<a id='motivation'></a>
 
-## 1. Project Overview
+## 1. Project Motivation
 
 This repo is for Data Scientist Nanodegree Program by Udacity, utilizing a dataset provided by <a href="https://www.figure-eight.com/" target="_blank">Figure Eight</a>. The dataset comprises real-life disaster messages, offering a valuable resource for building a model to classify such messages effectively.
 
@@ -85,6 +85,5 @@ P.S. Run run.py directly if DisasterResponse.db and classifier.pkl already exist
 <a id='ss'></a>
 ## 4. Screenshots
 
-<img src="images/Image Pic1.png">
-
-<img src="images/Image Pic2.png">
+![Image description](images/Image_Pic1.png)
+![Image description](images/Image_Pic2.png)
