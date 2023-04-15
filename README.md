@@ -32,6 +32,9 @@ This project features a Flask web app, where an emergency worker can input a new
 
 ## 2. Project Descriptions
 
+![Image description](pic3.png)
+
+
 There are three step of this project:
 
 <a id='etl_pipeline'></a>
