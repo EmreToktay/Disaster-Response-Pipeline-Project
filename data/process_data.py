@@ -42,7 +42,11 @@ def clean_data(df):
 
     # Convert category values to just numbers 0 or 1.
     for column in categories:
-        categories[column] = categories[column].astype(str).str[-1]
+        # Check if the category column is multiclass
+        if categories[column].nunique() > 2:
+            # Assume that 2 means 0, and convert all 2s to 0s
+            categories[column] = categories[column].apply(lambda x: 0 if x == 2 else x)
+        # Convert category column to int datatype
         categories[column] = categories[column].astype(int)
 
     # drop the original categories column from `df`
@@ -66,7 +70,7 @@ def save_data(df, database_filename):
        """
     engine = create_engine('sqlite:///{}'.format(database_filename))
     print('enginecreated')
-    df.to_sql('disaster_response_table', engine, index=False)
+    df.to_sql('disaster_response_table', engine, index=False, if_exists='replace')
     print('disaster_response_table')
 
 

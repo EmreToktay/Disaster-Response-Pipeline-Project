@@ -22,9 +22,19 @@ import warnings
 warnings.filterwarnings("ignore")
 
 def load_data(database_filepath):
-    table_name = 'disaster_response_table'
-    engine = create_engine('sqlite:///../disaster_response.db')
-    df = pd.read_sql_table(table_name,engine)
+    '''
+    Load data from the SQLite database and prepare the data for modeling.
+    
+    Args:
+    database_filepath: str. Filepath for SQLite database containing cleaned data.
+    
+    Returns:
+    X: pandas.core.series.Series. The messages to use for model training and testing.
+    Y: pandas.core.frame.DataFrame. The target variables for model training and testing.
+    category_names: list of str. The category names for the target variables.
+    '''
+    engine = create_engine('sqlite:///' + database_filepath)
+    df = pd.read_sql_table('disaster_response_table', engine)
     X = df["message"]
     Y = df.drop(["genre","message","id","original"], axis=1)
     category_names = Y.columns
@@ -47,12 +57,12 @@ def tokenize(text):
     #Tokenize 'text'
     tokenizedwords = word_tokenize(text)
     
-    #Normalization of word tokens and removal of stop words
-    normalizertokens = PorterStemmer()
+    # Normalization of word tokens and removal of stop words
+    lemmatizertokens = WordNetLemmatizer()
     stop_words = stopwords.words("english")
-    
-    normalizedwords = [normalizertokens.stem(word) for word in tokenizedwords if word not in stop_words]
-    
+
+    normalizedwords = [lemmatizertokens.lemmatize(word) for word in tokenizedwords if word not in stop_words]
+
     return normalizedwords
 
 def build_model():
