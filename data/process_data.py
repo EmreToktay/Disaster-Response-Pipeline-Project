@@ -20,29 +20,41 @@ def load_data(messages_filepath, categories_filepath):
 
 def clean_data(df):
     """
-      Function:
-      clean the Dataframe df
-      Args:
-      df (DataFrame): A dataframe of messages and categories need to be cleaned
-      Return:
-      df (DataFrame): A cleaned dataframe of messages and categories
-      """
+    Clean the DataFrame df
+    Args:
+    df (DataFrame): A dataframe of messages and categories that needs to be cleaned
+    Returns:
+    df (DataFrame): A cleaned dataframe of messages and categories
+    """   
+    # Split `categories` into separate category columns.
+    # Create a new dataframe of categories by splitting the semicolon-separated values in the 'categories' column# Split `categories` into separate category columns.
     categories = df['categories'].str.split(';', expand=True)
-    categories.head()
-    row = categories.head(1)
-    category_colnames = row.applymap(lambda x:x.split('-')[0]).values.tolist() 
-    print(category_colnames)
-    row = categories.iloc[0,:]
-    category_colnames = row.apply(lambda x:x[:-2])
-    print(category_colnames)
+
+    # select the first row of the categories dataframe
+    # Extract the category names from the first row of the categories dataframe
+    categories = df.categories.str.split(';', expand = True)
+    row = categories.loc[0]
+    category_colnames = row.apply(lambda x: x[:-2]).values.tolist()
     categories.columns = category_colnames
+    
+    # Replace 'related-2' with 'related-1' to handle the multiclass 'related' category
+    categories.related.loc[categories.related == 'related-2'] = 'related-1'
+    
+    # Convert category values to numeric type
     for column in categories:
-        categories[column] = categories[column].astype(str).str[-1:]
-        categories[column] = categories[column].astype(int)
-    df.drop('categories', axis=1, inplace=True)
-    df = pd.concat([df,categories], axis=1)
-    df.drop_duplicates(inplace=True)
+        categories[column] = categories[column].astype(str).str[-1]
+        categories[column] = pd.to_numeric(categories[column])
+        
+    # Replace the `categories` column in `df` with `categories`.
+    # Drop the original categories column from `df`.
+    df.drop('categories', axis = 1, inplace = True)
+    df = pd.concat([df, categories], axis = 1)
+    
+    # Drop duplicates based on 'id'
+    df.drop_duplicates(subset = 'id', inplace = True)
     return df
+
+
 
 def save_data(df, database_filename):
     """
@@ -52,9 +64,12 @@ def save_data(df, database_filename):
        df (DataFrame): A dataframe of messages and categories
        database_filename (str): The file name of the database
        """
-    engine = create_enginecd 
-    df.to_sql('disaster_response_table', engine, index=False)
-    
+    engine = create_engine('sqlite:///{}'.format(database_filename))
+
+    df.to_sql('disaster_response_table', engine, index=False, if_exists='replace')
+
+
+
 def main():
     if len(sys.argv) == 4:
 
@@ -66,12 +81,12 @@ def main():
 
         print('Cleaning data...')
         df = clean_data(df)
-        
+
         print('Saving data...\n    DATABASE: {}'.format(database_filepath))
         save_data(df, database_filepath)
-        
+
         print('Cleaned data saved to database!')
-    
+
     else:
         print('Please provide the filepaths of the messages and categories '\
               'datasets as the first and second argument respectively, as '\

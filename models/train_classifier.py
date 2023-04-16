@@ -35,7 +35,7 @@ def load_data(database_filepath):
     category_names: list of str. The category names for the target variables.
     '''
     table_name = 'disaster_response_table'
-    engine = create_engine("sqlite:///../data/DisasterResponse.db")
+    engine = create_engine('sqlite:///'+ database_filepath)
     df = pd.read_sql_table(table_name,engine)
     X = df["message"]
     Y = df.drop(["genre","message","id","original"], axis=1)
@@ -179,5 +179,3 @@ def main():
 
 if __name__ == '__main__':
     main()
-
-    
