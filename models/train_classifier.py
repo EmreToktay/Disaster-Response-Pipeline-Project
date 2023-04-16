@@ -7,6 +7,7 @@ import sys
 import re
 import pickle
 from sklearn.pipeline import Pipeline,FeatureUnion
+from sqlalchemy import create_engine
 from nltk.tokenize import word_tokenize, RegexpTokenizer, sent_tokenize
 from nltk.stem import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
@@ -33,8 +34,9 @@ def load_data(database_filepath):
     Y: pandas.core.frame.DataFrame. The target variables for model training and testing.
     category_names: list of str. The category names for the target variables.
     '''
-    engine = create_engine('sqlite:///' + database_filepath)
-    df = pd.read_sql_table('disaster_response_table', engine)
+    table_name = 'disaster_response_table'
+    engine = create_engine("sqlite:///../data/DisasterResponse.db")
+    df = pd.read_sql_table(table_name,engine)
     X = df["message"]
     Y = df.drop(["genre","message","id","original"], axis=1)
     category_names = Y.columns
