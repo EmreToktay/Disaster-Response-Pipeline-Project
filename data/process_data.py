@@ -4,14 +4,14 @@ from sqlalchemy import create_engine
 
 def load_data(messages_filepath, categories_filepath):
     """
-    Load dataframe from filepaths
-    
-    Arguments:
-        messages_filepath -> str, links to messages csv file
-        categories_filepath -> str, links to categories csv file
-    Output:
-        df -> Final loaded data as Pandas DataFrame
-    """
+      Function:
+      load data from two csv file and then merge them
+      Args:
+      messages_filepath (str): the file path of messages csv file
+      categories_filepath (str): the file path of categories csv file
+      Return:
+      df (DataFrame): A dataframe of messages and categories
+      """
     messages = pd.read_csv(messages_filepath)
     categories = pd.read_csv(categories_filepath)
     df = messages.merge(categories, on = 'id')
@@ -20,13 +20,13 @@ def load_data(messages_filepath, categories_filepath):
 
 def clean_data(df):
     """
-    Clean data by transforming categories
-    
-    Arguments:
-        df -> type pandas DataFrame
-    Output:
-        df -> cleaned pandas DataFrame
-    """
+      Function:
+      clean the Dataframe df
+      Args:
+      df (DataFrame): A dataframe of messages and categories need to be cleaned
+      Return:
+      df (DataFrame): A cleaned dataframe of messages and categories
+      """
     categories = df['categories'].str.split(';', expand=True)
     categories.head()
     row = categories.head(1)
@@ -46,12 +46,12 @@ def clean_data(df):
 
 def save_data(df, database_filename):
     """
-    Saves input DataFrame to provided database file path
-    
-    Arguments:
-        df -> Pandas DataFrame
-        database_filename -> Disaster Response Database file (.db) destination path
-    """
+       Function:
+       Save the Dataframe df in a database
+       Args:
+       df (DataFrame): A dataframe of messages and categories
+       database_filename (str): The file name of the database
+       """
     engine = create_enginecd 
     df.to_sql('disaster_response_table', engine, index=False)
     
